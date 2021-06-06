@@ -239,24 +239,38 @@ mod binary_options {
             return Err(ErrorCode::MarketAlreadySettled.into());
         }
 
-        market.settler = *ctx.accounts.settler.key;
-        market.state.status = MarketStatus::Settled;
         let clock = Clock::from_account_info(&ctx.accounts.clock)?;
         if clock.unix_timestamp.lt(&market.condition.start) {
             return Err(ErrorCode::TooEarlyToSettle.into());
         }
 
         if clock.unix_timestamp.gt(&market.condition.end) {
+            market.settler = *ctx.accounts.settler.key;
+            market.state.status = MarketStatus::Settled;
             market.state.result = Outcome::No;
             return Ok(())
         }
+
         let price_data = &ctx.accounts.price.try_borrow_data()?;
         let price = pyth_client::cast::<pyth_client::Price>(price_data).agg.price;
-        let outcome = match market.condition.operator {
-            ConditionOperator::GreaterThan => if market.condition.value > price { Outcome::Yes } else { Outcome::No }
-            ConditionOperator::LessThan => if market.condition.value < price { Outcome::Yes } else { Outcome::No }
-        };
-        market.state.result = outcome;
+
+        if let ConditionOperator::GreaterThan = market.condition.operator {
+            if price > market.condition.value {
+                market.settler = *ctx.accounts.settler.key;
+                market.state.status = MarketStatus::Settled;
+                market.state.result = Outcome::Yes;
+                return Ok(())
+            }
+        }
+
+        if let ConditionOperator::LessThan = market.condition.operator {
+            if price < market.condition.value {
+                market.settler = *ctx.accounts.settler.key;
+                market.state.status = MarketStatus::Settled;
+                market.state.result = Outcome::Yes;
+                return Ok(())
+            }
+        }
 
         Ok(())
     }
