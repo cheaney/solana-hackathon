@@ -101,7 +101,7 @@ export default function MarketsTable(
             dataIndex: 'value',
             key: 'value',
             sorter: (a: Market, b: Market) => a.value.gt(b.value) ? 1 : -1,
-            render: (text, record, index) => formatUSD(record.value, new BN(10**pythMap[props.symbol].exponent))
+            render: (text, record, index) => formatUSD(record.value, new BN(10**pythMap[record.symbol].exponent))
         },
         {
             title: 'Open Interest',

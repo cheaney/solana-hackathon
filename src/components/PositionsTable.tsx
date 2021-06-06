@@ -141,7 +141,7 @@ export default function PositionsTable(
             dataIndex: 'value',
             key: 'value',
             sorter: (a: Position, b: Position) => a.market.value.gt(b.market.value) ? 1 : -1,
-            render: (text, record) => formatUSD(record.market.value, new BN(10**pythMap[props.symbol].exponent)),
+            render: (text, record) => formatUSD(record.market.value, new BN(10**pythMap[record.market.symbol].exponent)),
         },
         {
             title: 'Bet Outcome',

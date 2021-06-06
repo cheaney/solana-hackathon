@@ -117,7 +117,7 @@ export default function OpenOfferTable(
             dataIndex: 'value',
             key: 'value',
             sorter: (a: Offer, b: Offer) => props.markets[a.market.toString()].value.gt(props.markets[b.market.toString()].value) ? 1 : -1,
-            render: (text, record) => formatUSD(props.markets[record.market.toString()].value, new BN(10**pythMap[props.symbol].exponent))
+            render: (text, record) => formatUSD(props.markets[record.market.toString()].value, new BN(10**pythMap[record.market.symbol.symbol].exponent))
         },
         {
             title: 'Outcome',
