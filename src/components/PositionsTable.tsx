@@ -219,7 +219,7 @@ export default function PositionsTable(
             key: 'action',
             render: (text, record: Position) => {
                 const market = record.market;
-                if (market.status === 'Open' && moment().unix() >= market.date.endOf("day").unix()) {
+                if (market.status === 'Open' && moment().unix() >= market.date.startOf("day").unix()) {
                     return (
                         <Button
                             type="link"

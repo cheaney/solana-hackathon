@@ -171,7 +171,7 @@ export default function CreatedMarketsTable(
             dataIndex: 'action',
             key: 'action',
             render: (text, record) => {
-                if (record.status === 'Open' && moment().unix() >= record.date.endOf("day").unix()) {
+                if (record.status === 'Open' && moment().unix() >= record.date.startOf("day").unix()) {
                     return (
                         <Button
                             type="link"
