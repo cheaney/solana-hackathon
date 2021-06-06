@@ -10,11 +10,11 @@ export default function BasicLayout({ children }) {
       <Layout
         style={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}
       >
-        <Header style={{ padding: 0, minHeight: 64, height: 'unset' }}>
+        <Header style={{ padding: 0, minHeight: '10vh', height: 'unset' }}>
           <TopBar />
         </Header>
         <Content style={{ flex: 1 }}>{children}</Content>
-        <Footer />
+        {/*<Footer />*/}
       </Layout>
     </React.Fragment>
   );

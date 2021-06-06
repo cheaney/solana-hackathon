@@ -7,6 +7,7 @@ import { Spin } from 'antd';
 import ErrorBoundary from './components/ErrorBoundary';
 import { Routes } from './routes';
 import { PreferencesProvider } from './utils/preferences';
+import { BinaryOptionsProgramProvider } from "./api/BinaryOptionsProgramProvider";
 
 export default function App() {
   return (
@@ -15,11 +16,13 @@ export default function App() {
       <ErrorBoundary>
         <ConnectionProvider>
           <WalletProvider>
-            <PreferencesProvider>
-              <Suspense fallback={() => <Spin size="large" />}>
-                <Routes />
-              </Suspense>
-            </PreferencesProvider>
+              <BinaryOptionsProgramProvider>
+                  <PreferencesProvider>
+                      <Suspense fallback={() => <Spin size="large" />}>
+                          <Routes />
+                      </Suspense>
+                  </PreferencesProvider>
+              </BinaryOptionsProgramProvider>
           </WalletProvider>
         </ConnectionProvider>
       </ErrorBoundary>

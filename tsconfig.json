@@ -17,7 +17,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react",
-    "lib": ["dom", "esnext"]
+    "lib": ["dom", "esnext"],
   },
   "include": ["./src/"],
   "exclude": [

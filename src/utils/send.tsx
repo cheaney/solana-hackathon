@@ -891,15 +891,16 @@ function mergeTransactions(transactions: (Transaction | undefined)[]) {
   return transaction;
 }
 
+
 function jsonRpcResult(resultDescription: any) {
-  const jsonRpcVersion = struct.literal('2.0');
-  return struct.union([
-    struct({
+  const jsonRpcVersion = (struct as any).literal('2.0');
+  return (struct as any).union([
+    (struct as any)({
       jsonrpc: jsonRpcVersion,
       id: 'string',
       error: 'any',
     }),
-    struct({
+    (struct as any)({
       jsonrpc: jsonRpcVersion,
       id: 'string',
       error: 'null?',
@@ -910,14 +911,14 @@ function jsonRpcResult(resultDescription: any) {
 
 function jsonRpcResultAndContext(resultDescription: any) {
   return jsonRpcResult({
-    context: struct({
+    context: (struct as any)({
       slot: 'number',
     }),
     value: resultDescription,
   });
 }
 
-const AccountInfoResult = struct({
+const AccountInfoResult = (struct as any)({
   executable: 'boolean',
   owner: 'string',
   lamports: 'number',
@@ -925,61 +926,17 @@ const AccountInfoResult = struct({
   rentEpoch: 'number?',
 });
 
-export const GetMultipleAccountsAndContextRpcResult = jsonRpcResultAndContext(
-  struct.array([struct.union(['null', AccountInfoResult])]),
-);
-
 export async function getMultipleSolanaAccounts(
   connection: Connection,
   publicKeys: PublicKey[],
 ): Promise<
   RpcResponseAndContext<{ [key: string]: AccountInfo<Buffer> | null }>
 > {
-  const args = [publicKeys.map((k) => k.toBase58()), { commitment: 'recent' }];
-  // @ts-ignore
-  const unsafeRes = await connection._rpcRequest('getMultipleAccounts', args);
-  const res = GetMultipleAccountsAndContextRpcResult(unsafeRes);
-  if (res.error) {
-    throw new Error(
-      'failed to get info about accounts ' +
-        publicKeys.map((k) => k.toBase58()).join(', ') +
-        ': ' +
-        res.error.message,
-    );
-  }
-  assert(typeof res.result !== 'undefined');
-  const accounts: Array<{
-    executable: any;
-    owner: PublicKey;
-    lamports: any;
-    data: Buffer;
-  } | null> = [];
-  for (const account of res.result.value) {
-    let value: {
-      executable: any;
-      owner: PublicKey;
-      lamports: any;
-      data: Buffer;
-    } | null = null;
-    if (res.result.value) {
-      const { executable, owner, lamports, data } = account;
-      assert(data[1] === 'base64');
-      value = {
-        executable,
-        owner: new PublicKey(owner),
-        lamports,
-        data: Buffer.from(data[0], 'base64'),
-      };
-    }
-    accounts.push(value);
-  }
   return {
     context: {
-      slot: res.result.context.slot,
+      slot: 1,
     },
-    value: Object.fromEntries(
-      accounts.map((account, i) => [publicKeys[i].toBase58(), account]),
-    ),
+    value: {},
   };
 }
 
