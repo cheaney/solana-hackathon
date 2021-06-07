@@ -161,11 +161,18 @@ export default function PositionsTable(
             onFilter: (value, record: Position) => record.outcome === value,
         },
         {
-            title: 'Bet Amount',
+            title: 'Bet',
             dataIndex: 'bet',
             key: 'bet',
             render: (text, record: Position) => formatSOL(record.betAmount),
             sorter: (a: Position, b: Position) => a.betAmount.lt(b.betAmount) ? -1 : 1,
+        },
+        {
+            title: 'Win',
+            dataIndex: 'win',
+            key: 'win',
+            render: (text, record) => formatSOL(calculateToWinAmount(record.betAmount)),
+            sorter: (a: Position, b: Position) => a.offer.totalAmount.sub(a.betAmount).gt(b.offer.totalAmount.sub(b.betAmount)) ? 1 : -1,
         },
         {
             title: 'Market Outcome',
@@ -189,20 +196,6 @@ export default function PositionsTable(
             onFilter: (value, record: Position) => record.market.outcome === value,
         },
         {
-            title: 'Won',
-            dataIndex: 'won',
-            key: 'won',
-            render: (text, record: Position) => {
-                if (record.market.outcome === 'Undecided') {
-                    return '—';
-                } else if (record.market.outcome !== record.outcome) {
-                    return formatSOL(new BN(0));
-                } else {
-                    return formatSOL(calculateToWinAmount(record.betAmount))
-                }
-            },
-        },
-        {
             title: 'Profit',
             dataIndex: 'profit',
             key: 'profit',
@@ -221,7 +214,7 @@ export default function PositionsTable(
                         props: {
                             style: { color: "#237804"}
                         },
-                        children: <div>{formatSOL(calculateToWinAmount(record.betAmount).sub(record.betAmount))}</div>
+                        children: <div>{formatSOL(calculateToWinAmount(record.betAmount))}</div>
                     };
                 }
 
