@@ -36,6 +36,17 @@ export default function MakeOfferDialog(props) {
             return;
         }
         setIsLoading(true);
+        const userBalance = await connection.getBalance(wallet.wallet.publicKey, 'confirmed');
+        if ((new BN(amount)).mul(new BN(10**9)).gt(new BN(userBalance.toString()))) {
+            notify({
+                "message": "Insufficient funds",
+                "description": "You don't have enough SOL to make offer",
+                "type": "error",
+            })
+            setIsLoading(false);
+            return;
+        }
+
         const makeOfferRequest : MakeOfferRequest = {
             market: props.market,
             outcome,

@@ -11,6 +11,7 @@ import {Offer} from "../api/model/Offer";
 import {formatConfirmationMessage} from "../api/offerFormatter";
 import {Market} from "../api/model/Market";
 import {notifyError} from "./errorNotification";
+import BN from 'bn.js';
 
 export default function OfferTable(props: {key: string, market: Market, offers: {[key:string]: Offer}, onTakeOffer: any}) {
     const [selectedOffer, setSelectedOffer] = React.useState("");
@@ -33,6 +34,18 @@ export default function OfferTable(props: {key: string, market: Market, offers: 
             return;
         }
         setLoading(true);
+        const userBalance = await connection.getBalance(wallet.wallet.publicKey, 'confirmed');
+        if (offer.totalAmount.sub(offer.betAmount).gt(new BN(userBalance.toString()))) {
+            notify({
+                "message": "Insufficient funds",
+                "description": "You don't have enough SOL to take offer",
+                "type": "error",
+            })
+            setSelectedOffer("");
+            setLoading(false);
+            return;
+        }
+
         try {
             const takeOfferIx = await takeOffer(program, wallet.wallet, connection, props.market, offer);
             await props.onTakeOffer(takeOfferIx, offer);
