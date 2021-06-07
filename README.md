@@ -1,61 +1,35 @@
-# Serum DEX UI
+# B.Options
 
-An implementation of a UI for the Serum DEX.
+B.Options is a peer-to-peer binary option protocol on Solana's Devnet. A binary option is an option that pays a fixed
+amount if the price of the underlying is above or below some threshold price on some pre-specified date.
+E.g. it pays out 60 SOL if Doge is above $1000 on 12/31/21 and pays 0 SOL if it's not. B.Options enables two users to create a binary option
+directly. One user bets 40 SOL that Doge will be above $1000 on 12/31 and another bets 60 SOL that it will not.
+The user that is correct wins 100 SOL.
+
+### Demo
+
+https://master.d3l9kxlod1f7fu.amplifyapp.com/#/
+
+### How It Works
+
+1. One user must create a market for a binary option. The market specifies the underlying asset, the condition (above or below),
+   the price and the date. Once the market is created, other users can make and take offers on bets with various sizes. While different
+   sets of users can enter contracts with different odds, the market ultimately keeps track of ownership of contracts with the same SPL token mint.
+   This means that the binary options are fungible and thus there can be a secondary market for them on Serum. To incentivize users to create markets,
+   the creator of a market receives 1% of all SOL sent to the market escrow e.g. if there are 1000 SOL worth of options created, the creator gets 10 SOL.
+2. Users make offers to enter a binary option contract. They specify which side of the option they want (Yes/No) and how much SOL they'd like to bet. When
+   they make an offer the corresponding amount of SOL is placed in a market escrow account controlled by the B.Options Program. The user can cancel
+   their offer as long as it hasn't been taken by another user.
+3. Users take the other side of open offers. If the first user bet 40 SOL to win 60 SOL that Doge is above $1000 on 12/31, the second user
+   bets 60 SOL to win 40 SOL that this doesn't happen. The second user similarly sends their SOL to an escrow account controlled by the B.Options
+   program. Once an offer is taken, it can no longer be canceled by the first user who made the initial offer.
+4. Binary options are settled using data from the Pyth oracle (https://pyth.network/). Because Pyth Programs only record an asset's current price, a subset of users
+   monitors the open binary option markets and their underlying asset prices. When Pyth reports a price that affirms an options outcome condition, a user
+   settles the outcome of the option. E.g. if Pyth reports Doge at $1001 on 12/31, a user settles the outcome of the option market as Yes. If the exercise date of an option
+   passes without being settled (Doge never crosses $1000 on 12/31), a user settles the option outcome as No. For a settling a market, the settler is reward 1% of the SOL in the market escrow.
+   Settlers thus function in a similar role to liquidators in Compound or SRM nodes in Serum.
+5. Users withdraw their SOL from the market escrow. The winning user withdraws 98% of the SOL (total escrow sans creator/settler fees) while the losing user withdraws a zero amount.
 
 ### Running the UI
 
 Run `yarn` to install dependencies, then run `yarn start` to start a development server or `yarn build` to create a production build that can be served by a static file server.
-
-### Collect referral fees
-
-If you are hosting a public UI using this codebase, you can collect referral fees when your users trade through your site.
-
-To do so, set the `REACT_APP_USDT_REFERRAL_FEES_ADDRESS` and `REACT_APP_USDC_REFERRAL_FEES_ADDRESS` environment variables to the addresses of your USDT and USDC SPL token accounts.
-
-You may want to put these in local environment files (e.g. `.env.development.local`, `.env.production.local`). See the [documentation](https://create-react-app.dev/docs/adding-custom-environment-variables) on environment variables for more information.
-
-NOTE: remember to re-build your app before deploying for your referral addresses to be reflected.
-
-### Add Trading View charts
-
-It is possible to add OHLCV candles built from on chain data using [Bonfida's API](https://docs.bonfida.com). Here is how to do it:
-
-1. Get access to the [TradingView Charting Library](https://github.com/tradingview/charting_library/) repository. This is a **private repository** and it will **return a 404 if you don't have access to it**. To get access to the repository please refer to [TradingView's website](https://www.tradingview.com/HTML5-stock-forex-bitcoin-charting-library/)
-
-2. Once you have access to the Charting Library repository:
-
-- Copy `charting_library` folder from https://github.com/tradingview/charting_library/ to `/public` and to `/src` folders.
-- Copy `datafeeds` folder from https://github.com/tradingview/charting_library/ to `/public`.
-
-3. Import `TVChartContainer` from `/src/components/TradingView` and add it to your `TradePage.tsx`. The TradingView widget will work out of the box using [Bonfida's](https://bonfida.com) datafeed.
-
-4. Remove the following from the `tsconfig.json`
-
-```json
-"./src/components/TradingView/index.tsx"
-```
-
-5. Uncomment the following in `public/index.html`
-
-```
-<script src="%PUBLIC_URL%/datafeeds/udf/dist/polyfills.js"></script>
-<script src="%PUBLIC_URL%/datafeeds/udf/dist/bundle.js">
-```
-
-<p align="center">
-<img height="300" src="https://i.imgur.com/UyFKmTv.png">
-</p>
-
----
-
-See the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started) for other commands and options.
-
----
-
-See [A technical introduction to the Serum DEX](https://projectserum.com/blog/serum-dex-introduction) to learn more about the Serum DEX.
-
-See [serum-js](https://github.com/project-serum/serum-js) for DEX client-side code. Serum DEX UI uses this library.
-
-See [sol-wallet-adapter](https://github.com/project-serum/sol-wallet-adapter) for an explanation of how the Serum DEX UI interacts with wallet services to sign and send requests to the Serum DEX.
-
-See [spl-token-wallet](https://github.com/project-serum/spl-token-wallet) for an implementation of such a wallet, live at [sollet.io](https://sollet.io).

@@ -3,7 +3,7 @@ import {
   PlusCircleOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import { Button, Col, Menu, Popover, Row, Select } from 'antd';
+import {Button, Col, Menu, Modal, Popover, Row, Select} from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.svg';
@@ -19,6 +19,7 @@ import WalletConnect from './WalletConnect';
 import AppSearch from './AppSearch';
 import { getTradePageUrl } from '../utils/markets';
 import {Option} from "antd/es/mentions";
+import DocumentationContent from "./DocumentationContent";
 
 const Wrapper = styled.div`
   background-color: #0d1017;
@@ -37,7 +38,8 @@ const LogoWrapper = styled.div`
   img {
     height: 30px;
     margin-right: 8px;
-  }
+  };
+  pointer-events: none;
 `;
 
 const EXTERNAL_LINKS = {
@@ -62,18 +64,8 @@ export default function TopBar() {
   } = useConnectionConfig();
   const [addEndpointVisible, setAddEndpointVisible] = useState(false);
   const [testingConnection, setTestingConnection] = useState(false);
+  const [showDocumentation, setShowDocumentation] = useState(false);
   const location = useLocation();
-  const history = useHistory();
-  const [searchFocussed, setSearchFocussed] = useState(false);
-
-  const handleClick = useCallback(
-    (e) => {
-      if (!(e.key in EXTERNAL_LINKS)) {
-        history.push(e.key);
-      }
-    },
-    [history],
-  );
 
   const onAddCustomEndpoint = (info: EndpointInfo) => {
     const existingEndpoint = availableEndpoints.some(
@@ -144,10 +136,19 @@ export default function TopBar() {
         <LogoWrapper>
           {'B.Options'}
         </LogoWrapper>
+        <Modal
+            title={"Documentation"}
+            visible={showDocumentation}
+            onCancel={() => setShowDocumentation(false)}
+            width={"80vw"}
+            footer={null}
+        >
+          <DocumentationContent/>
+        </Modal>
         <Menu
           mode="horizontal"
-          onClick={handleClick}
-          selectedKeys={[location.pathname]}
+          onClick={() => setShowDocumentation(true)}
+          selectedKeys={[]}
           style={{
             borderBottom: 'none',
             backgroundColor: 'transparent',
@@ -156,6 +157,7 @@ export default function TopBar() {
             flex: 1,
           }}
         >
+          <Menu.Item>Documentation</Menu.Item>
         </ Menu>
         <div
           style={{
