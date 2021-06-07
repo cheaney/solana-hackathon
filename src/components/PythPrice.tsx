@@ -15,7 +15,7 @@ export default function PythPrice(props) {
     const oracleUrl = `https://pyth.network/markets/#${splitSymbol[0]}/${splitSymbol[1]}`
 
     const priceKey = pythMap[props.symbol].priceAccount;
-    const connection = new Connection('https://devnet.solana.com', 'confirmed');
+    const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
 
     const fetchFirstTime = async () => {
         try {

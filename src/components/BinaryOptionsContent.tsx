@@ -29,16 +29,25 @@ export default function BinaryOptionsContent() {
     let [showCreateMarketModal, setCreateMarketModal] = useState(false);
     let [selectedMarket, setSelectedMarket] = useState<Market | null>(null);
     let [programState, setProgramState] = useState<ProgramState>(Object.assign({}, cachedProgramState));
-    const mountedRef = useRef(true);
+    const mountedRef = useRef(null);
 
     const program = useBinaryOptionsProgram();
     const fetchProgramState = async () => {
         if (programState.key !== -1) return;
-        const newProgramState = await getProgramState(program);
-        if (mountedRef.current) {
-            setProgramState(newProgramState);
+        try {
+            const newProgramState = await getProgramState(program);
+            if (mountedRef.current) {
+                setProgramState(newProgramState);
+            }
+        } catch (err) {
+            if (mountedRef.current) {
+                notify({
+                    message: "Error",
+                    description: "Couldn't fetch markets. Devnet might be down!",
+                    type: "error",
+                })
+            }
         }
-        return () => (mountedRef.current = false);
     }
 
     useEffect(() => {
@@ -54,7 +63,6 @@ export default function BinaryOptionsContent() {
             txid: createMarketTx,
             type: "success",
         });
-        return () => (mountedRef.current = false);
     }
 
     const onMakeOffer = async (makeOfferTx: string, offerPublicKey: PublicKey, marketPublicKey: PublicKey) => {
@@ -131,7 +139,7 @@ export default function BinaryOptionsContent() {
     const sortedMarkets = filteredMarkets.sort((a: Market, b: Market) => a.date.unix() - b.date.unix());
 
     return (
-        <Wrapper>
+        <Wrapper ref={mountedRef}>
             <MakeMarketDialog
                 key={symbol}
                 show={showCreateMarketModal}
@@ -169,6 +177,7 @@ export default function BinaryOptionsContent() {
                                         onTakeOffer={onTakeOffer}
                                         selectedMarket={selectedMarket}
                                         setSelectedMarket={setSelectedMarket}
+                                        loading={programState.key === -1}
                                     />
                                 </Col>
                             </Row>

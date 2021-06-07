@@ -17,6 +17,7 @@ export default function MarketsTable(
         onTakeOffer: any,
         selectedMarket: Market | null,
         setSelectedMarket: any,
+        loading: boolean
     }
 ) {
     let [selectedMarket, setSelectedMarket] = useState<Market | null>(props.selectedMarket);
@@ -161,6 +162,7 @@ export default function MarketsTable(
                 dataSource={props.markets}
                 locale={{ emptyText: "No Markets"}}
                 size={"small"}
+                loading={props.loading}
             />
         </>
     )
