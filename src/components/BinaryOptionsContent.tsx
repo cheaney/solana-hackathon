@@ -34,7 +34,7 @@ export default function BinaryOptionsContent() {
     const program = useBinaryOptionsProgram();
     const fetchProgramState = async () => {
         if (programState.key !== -1) return;
-        const newProgramState = await getProgramState(program)
+        const newProgramState = await getProgramState(program);
         if (mountedRef.current) {
             setProgramState(newProgramState);
         }

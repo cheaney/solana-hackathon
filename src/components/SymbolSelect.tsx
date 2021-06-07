@@ -1,6 +1,5 @@
 import React from 'react';
 import {Select} from "antd";
-import {Option} from "antd/es/mentions";
 import {pythMap} from "../api/storage/pyth";
 
 export default function SymbolSelect(props) {
@@ -15,7 +14,7 @@ export default function SymbolSelect(props) {
             allowClear={props.allowClear || false}
             onClear={props.onClear}
         >
-            {Object.keys(pythMap).map(symbol => <Option key={symbol} value={symbol}>{symbol}</Option>)}
+            {Object.keys(pythMap).map(symbol => <Select.Option key={symbol} value={symbol}>{symbol}</Select.Option>)}
         </Select>
     );
 }

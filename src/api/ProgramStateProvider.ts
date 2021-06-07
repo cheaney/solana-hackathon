@@ -7,11 +7,9 @@ import {Position} from "./model/Position";
 import BN from "bn.js";
 import {PublicKey} from "@solana/web3.js";
 
-let alreadyFetching = false;
 let cachedProgramState : ProgramState = getEmptyProgramState();
 export async function getProgramState(program: Program, bypassCache: boolean = false) : Promise<ProgramState>{
-    if (!alreadyFetching && cachedProgramState.key !== -1 && !bypassCache) return cachedProgramState;
-    alreadyFetching = true;
+    if (cachedProgramState.key !== -1 && !bypassCache) return cachedProgramState;
     const marketAccounts = await program.account.market.all();
     const offerAccounts = await program.account.offer.all();
 
@@ -103,7 +101,6 @@ export async function getProgramState(program: Program, bypassCache: boolean = f
             }
         }
     });
-    alreadyFetching = false;
     return cachedProgramState;
 }
 
