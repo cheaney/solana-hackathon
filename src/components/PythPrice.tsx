@@ -15,13 +15,17 @@ export default function PythPrice(props) {
     const oracleUrl = `https://pyth.network/markets/#${splitSymbol[0]}/${splitSymbol[1]}`
 
     const priceKey = pythMap[props.symbol].priceAccount;
-    const connection = new Connection('https://devnet.solana.com', 'max');
+    const connection = new Connection('https://devnet.solana.com', 'confirmed');
 
     const fetchFirstTime = async () => {
-        const accountInfo = await connection.getAccountInfo(priceKey, "max");
-        if (accountInfo != null && mountedRef.current) {
-            const { price }  = parsePriceData(accountInfo.data);
-            setPrice(price);
+        try {
+            const accountInfo = await connection.getAccountInfo(priceKey, "confirmed");
+            if (accountInfo != null && mountedRef.current) {
+                const { price }  = parsePriceData(accountInfo.data);
+                setPrice(price);
+            }
+        } catch (err) {
+            //no-op
         }
 
         return () => {
