@@ -174,7 +174,6 @@ mod binary_options {
             ],
         )?;
 
-        msg!("Here");
         let mint = if let Outcome::Yes = offer.outcome {market.yes_mint} else {market.no_mint};
         let nonce = if let Outcome::Yes = offer.outcome {market.yes_mint_authority_nonce} else {market.no_mint_authority_nonce};
         let mint_signature_seeds = [mint.as_ref(), bytemuck::bytes_of(&nonce)];
@@ -188,7 +187,6 @@ mod binary_options {
         let cpi_context = CpiContext::new_with_signer(cpi_program, cpi_accounts, signers);
         token::mint_to(cpi_context, offer.bet_amount)?;
 
-        msg!("Here2");
         let mint = if let Outcome::Yes = offer.outcome {market.no_mint} else {market.yes_mint};
         let nonce = if let Outcome::Yes = offer.outcome {market.no_mint_authority_nonce} else {market.yes_mint_authority_nonce};
         let mint_signature_seeds = [mint.as_ref(), bytemuck::bytes_of(&nonce)];
@@ -305,21 +303,13 @@ mod binary_options {
             let settler_fee = offer.total_amount * market.fees.settler_fee_numerator / market.fees.settler_fee_denominator;
             if let Outcome::Yes = market.state.result {
                 if bet_token_account.mint == market.yes_mint {
-                    if offer.creator == *withdrawer.key  {
-                        withdraw_amount = offer.bet_amount - creator_fee - settler_fee;
-                    } else {
-                        withdraw_amount =  offer.total_amount - offer.bet_amount - creator_fee - settler_fee;
-                    }
+                    withdraw_amount =  offer.total_amount - creator_fee - settler_fee;
                 }
             }
 
             if let Outcome::No = market.state.result {
                 if bet_token_account.mint == market.no_mint {
-                    if offer.creator == *withdrawer.key  {
-                        withdraw_amount = offer.bet_amount - creator_fee - settler_fee;
-                    } else {
-                        withdraw_amount =  offer.total_amount - offer.bet_amount - creator_fee - settler_fee;
-                    }
+                    withdraw_amount =  offer.total_amount - creator_fee - settler_fee;
                 }
             }
         }
