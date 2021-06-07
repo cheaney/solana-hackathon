@@ -190,7 +190,9 @@ export default function CreatedMarketsTable(
                         </Button>
                     )
                 } else if (record.creatorWithdrew) {
-                    return "Already Withdrew"
+                    return "Already Withdrew";
+                } else {
+                    return "Awaiting Settlement";
                 }
             }
         },

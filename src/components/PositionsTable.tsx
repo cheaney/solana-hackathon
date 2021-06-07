@@ -196,18 +196,32 @@ export default function PositionsTable(
                 if (record.market.outcome === 'Undecided') {
                     return '—';
                 } else if (record.market.outcome !== record.outcome) {
+                    return formatSOL(new BN(0));
+                } else {
+                    return formatSOL(calculateToWinAmount(record.betAmount))
+                }
+            },
+        },
+        {
+            title: 'Profit',
+            dataIndex: 'profit',
+            key: 'profit',
+            render: (text, record: Position) => {
+                if (record.market.outcome === 'Undecided') {
+                    return '—';
+                } else if (record.market.outcome !== record.outcome) {
                     return {
                         props: {
                             style: { color: "#a8071a"}
                         },
-                        children: <div>{formatSOL(new BN(0))}</div>
+                        children: <div>-{formatSOL(record.betAmount)}</div>
                     };
                 } else {
                     return {
                         props: {
                             style: { color: "#237804"}
                         },
-                        children: <div>{formatSOL(calculateToWinAmount(record.betAmount))}</div>
+                        children: <div>{formatSOL(calculateToWinAmount(record.betAmount).sub(record.betAmount))}</div>
                     };
                 }
 

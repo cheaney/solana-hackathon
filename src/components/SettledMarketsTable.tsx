@@ -165,7 +165,7 @@ export default function SettledMarketsTable(
                             Withdraw
                         </Button>
                     )
-                } else if (record.creatorWithdrew) {
+                } else if (record.settlerWithdrew) {
                     return "Already Withdrew"
                 }
             }
