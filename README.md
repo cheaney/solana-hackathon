@@ -15,7 +15,7 @@ https://master.d3l9kxlod1f7fu.amplifyapp.com/#/
 1. One user must create a market for a binary option. The market specifies the underlying asset, the condition (above or below),
    the price and the date. Once the market is created, other users can make and take offers on bets with various sizes. While different
    sets of users can enter contracts with different odds, the market ultimately keeps track of ownership of contracts with the same SPL token mint.
-   This means that the binary options are fungible and thus there can be a secondary market for them on Serum. To incentivize users to create markets,
+   This means there can be a secondary market for them on Serum, although that isn't implemented currently. To incentivize users to create markets,
    the creator of a market receives 1% of all SOL sent to the market escrow e.g. if there are 1000 SOL worth of options created, the creator gets 10 SOL.
 2. Users make offers to enter a binary option contract. They specify which side of the option they want (Yes/No) and how much SOL they'd like to bet. When
    they make an offer the corresponding amount of SOL is placed in a market escrow account controlled by the B.Options Program. The user can cancel

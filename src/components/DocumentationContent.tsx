@@ -5,10 +5,10 @@ export default function DocumentationContent() {
     return (
       <div>
           <p>
-              1. One user must create a market for a binary option. The market specifies the underlying asset, the condition (above or below),
+              One user must create a market for a binary option. The market specifies the underlying asset, the condition (above or below),
               the price and the date. Once the market is created, other users can make and take offers on bets with various sizes. While different
               sets of users can enter contracts with different odds, the market ultimately keeps track of ownership of contracts with the same SPL token mint.
-              This means that the binary options are fungible and thus there can be a secondary market for them on Serum. To incentivize users to create markets,
+              This means there can be a secondary market for them on Serum, although that isn't implemented currently. To incentivize users to create markets,
               the creator of a market receives 1% of all SOL sent to the market escrow e.g. if there are 1000 SOL worth of options created, the creator gets 10 SOL.
           </p>
           <p>
