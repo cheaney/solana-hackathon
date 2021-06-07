@@ -50,6 +50,8 @@ export default function OfferTable(props: {key: string, market: Market, offers: 
             const takeOfferIx = await takeOffer(program, wallet.wallet, connection, props.market, offer);
             await props.onTakeOffer(takeOfferIx, offer);
         } catch (err) {
+            setSelectedOffer("");
+            setLoading(false);
             notifyError();
         }
     }

@@ -56,6 +56,7 @@ export default function MakeOfferDialog(props) {
             const [makeOfferTx, offerPublicKey] = await makeOffer(program, wallet.wallet, connection, makeOfferRequest);
             await props.onMakeOffer(makeOfferTx, offerPublicKey, props.market.key);
         } catch (err) {
+            setIsLoading(false);
             notifyError();
         }
     };
