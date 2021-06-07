@@ -7,7 +7,7 @@ import {useBinaryOptionsProgram} from "../api/BinaryOptionsProgramProvider";
 import {Market} from "../api/model/Market";
 import {notify} from "../utils/notifications";
 import {PublicKey} from "@solana/web3.js";
-import {cachedProgramState, getEmptyProgramState, getProgramState} from "../api/ProgramStateProvider";
+import {cachedProgramState, getProgramState} from "../api/ProgramStateProvider";
 import {ProgramState} from "../api/model/ProgramState";
 import MarketsTable from "./MarketsTables";
 import {Offer} from "../api/model/Offer";

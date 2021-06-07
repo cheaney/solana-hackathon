@@ -37,7 +37,7 @@ export default function MakeMarketDialog(props) {
         }
         setIsLoading(true);
         const createMarketResult : CreateMarketRequest = {
-            symbol: props.symbol,
+            symbol: symbol,
             date,
             value: new BN(value),
             condition,
@@ -64,7 +64,7 @@ export default function MakeMarketDialog(props) {
             <Form layout="vertical">
                 <Form.Item label="Pair">
                     <SymbolSelect
-                        default={symbol}
+                        value={symbol}
                         style={{}}
                         onSelect={val => {
                             setValue(pythMap[val].defaultPrice)

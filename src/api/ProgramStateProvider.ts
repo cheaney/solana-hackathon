@@ -7,10 +7,11 @@ import {Position} from "./model/Position";
 import BN from "bn.js";
 import {PublicKey} from "@solana/web3.js";
 
+let alreadyFetching = false;
 let cachedProgramState : ProgramState = getEmptyProgramState();
 export async function getProgramState(program: Program, bypassCache: boolean = false) : Promise<ProgramState>{
-    if (cachedProgramState.key !== -1 && !bypassCache) return cachedProgramState;
-
+    if (!alreadyFetching && cachedProgramState.key !== -1 && !bypassCache) return cachedProgramState;
+    alreadyFetching = true;
     const marketAccounts = await program.account.market.all();
     const offerAccounts = await program.account.offer.all();
 
@@ -102,20 +103,7 @@ export async function getProgramState(program: Program, bypassCache: boolean = f
             }
         }
     });
-
-    // const connection = program.provider.connection;
-    // await Promise.all(Object.entries(cachedProgramState.positions).reduce((promises, [owner, positions]) => {
-    //     Object.values(positions).forEach(position => {
-    //         const promise = async () => {
-    //             const tokenAmount = await connection.getTokenAccountBalance(position.betAccount, 'max');
-    //             if (tokenAmount.value.uiAmount !== null && tokenAmount.value.uiAmount > 0) {
-    //                 position.canWithdraw = true;
-    //             }
-    //         }
-    //         promises.push(promise());
-    //     });
-    //     return promises;
-    // }, new Array<Promise<void>>()));
+    alreadyFetching = false;
     return cachedProgramState;
 }
 

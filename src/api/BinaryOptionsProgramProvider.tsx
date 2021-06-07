@@ -17,19 +17,11 @@ export function BinaryOptionsProgramProvider({ children }) {
     const providerWallet = wallet.wallet !== undefined ? wallet.wallet : new Wallet(new Keypair());
     const provider = new Provider(connection, providerWallet, {
         skipPreflight: false,
-        commitment: 'max',
-        preflightCommitment: 'max',
+        commitment: 'confirmed',
+        preflightCommitment: 'confirmed',
     });
     let program = new Program(idlJSON, BINARY_OPTIONS_PROGRAM, provider);
     BinaryOptionsProgramContext = React.createContext(program);
-
-    const earlyFetchProgramState = async () => {
-        await getProgramState(program);
-    };
-
-    useEffect(() => {
-        earlyFetchProgramState();
-    })
 
     return (
         <BinaryOptionsProgramContext.Provider value={program}>
