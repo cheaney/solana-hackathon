@@ -301,19 +301,25 @@ mod binary_options {
 
         let bet_token_account = Account::unpack(&ctx.accounts.bet_token_account.data.borrow())?;
         if bet_token_account.amount > 0 {
+            let creator_fee = offer.total_amount * market.fees.creator_fee_numerator / market.fees.creator_fee_denominator;
+            let settler_fee = offer.total_amount * market.fees.settler_fee_numerator / market.fees.settler_fee_denominator;
             if let Outcome::Yes = market.state.result {
                 if bet_token_account.mint == market.yes_mint {
-                    let numerator = market.state.collateral as u128;
-                    let denominator = (bet_token_account.amount as u128) / (market.state.yes_tokens as u128);
-                    withdraw_amount += (numerator / denominator) as u64;
+                    if offer.creator == *withdrawer.key  {
+                        withdraw_amount = offer.bet_amount - creator_fee - settler_fee;
+                    } else {
+                        withdraw_amount =  offer.total_amount - offer.bet_amount - creator_fee - settler_fee;
+                    }
                 }
             }
 
             if let Outcome::No = market.state.result {
                 if bet_token_account.mint == market.no_mint {
-                    let numerator = market.state.collateral as u128;
-                    let denominator = (bet_token_account.amount as u128) / (market.state.no_tokens as u128);
-                    withdraw_amount += (numerator / denominator) as u64;
+                    if offer.creator == *withdrawer.key  {
+                        withdraw_amount = offer.bet_amount - creator_fee - settler_fee;
+                    } else {
+                        withdraw_amount =  offer.total_amount - offer.bet_amount - creator_fee - settler_fee;
+                    }
                 }
             }
         }
