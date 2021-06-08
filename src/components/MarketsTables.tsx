@@ -163,6 +163,7 @@ export default function MarketsTable(
                 locale={{ emptyText: "No Markets"}}
                 size={"small"}
                 loading={props.loading}
+                scroll={{y: "70vh"}}
             />
         </>
     )
